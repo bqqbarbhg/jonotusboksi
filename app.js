@@ -55,14 +55,14 @@ router.post("/api/press", async (ctx, next) => {
     ctx.response.body = { ok: true }
 })
 
-router.get("/api/dump", async (ctx, next) => {
+router.get("/api/dump", oakCors(), async (ctx, next) => {
     const rows = await executeSql("SELECT * FROM presses")
 
     ctx.response.type = "application/json"
     ctx.response.body = { rows }
 })
 
-router.get("/api/time/:location", async (ctx, next) => {
+router.get("/api/time/:location", oakCors(), async (ctx, next) => {
     const location = ctx.params["location"]
 
     const rows = await executeSql("SELECT minutes, time FROM presses WHERE location=$location ORDER BY time DESC LIMIT 100", { location })
@@ -102,8 +102,6 @@ app.use(async (ctx, next) => {
         await next()
     }
 })
-
-app.use(oakCors())
 
 app.use(router.routes())
 
