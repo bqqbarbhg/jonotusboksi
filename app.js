@@ -62,9 +62,12 @@ router.get("/api/dump", oakCors(), async (ctx, next) => {
     ctx.response.body = { rows }
 })
 
-router.get("/api/time/:location", oakCors(), async (ctx, next) => {
-    const location = ctx.params["location"]
+async function getLocations() {
+    const locations = await executeSql("SELECT DISTINCT location FROM presses")
+    return locations.map(l => l.location)
+}
 
+async function getEstimate(location) {
     const rows = await executeSql("SELECT minutes, time FROM presses WHERE location=$location ORDER BY time DESC LIMIT 100", { location })
     let totalMinutes = 0
     let totalWeight = 0
@@ -84,10 +87,26 @@ router.get("/api/time/:location", oakCors(), async (ctx, next) => {
         prevTime = curTime
     }
 
-    const minutes = totalMinutes / totalWeight
+    return totalMinutes / totalWeight
+}
+
+router.get("/api/time/:location", oakCors(), async (ctx, next) => {
+    const location = ctx.params["location"]
+    const minutes = await getEstimate(location)
 
     ctx.response.type = "application/json"
     ctx.response.body = { minutes }
+})
+
+router.get("/api/times", oakCors(), async (ctx, next) => {
+    const result = { }
+    const locations = await getLocations()
+    for (const location of locations) {
+        result[location] = await getEstimate(location)
+    }
+
+    ctx.response.type = "application/json"
+    ctx.response.body = result
 })
 
 app.use(async (ctx, next) => {
