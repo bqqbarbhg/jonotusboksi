@@ -61,13 +61,32 @@ router.get("/api/dump", async (ctx, next) => {
     ctx.response.body = { rows }
 })
 
-router.get("/api/times", async (ctx, next) => {
-    const body = await ctx.request.body().value
-    const minutes = buttonIdToMinutes[body.buttonId]
-    if (!minutes) return
+router.get("/api/time/:location", async (ctx, next) => {
+    const location = ctx.params["location"]
+
+    const rows = await executeSql("SELECT minutes, time FROM presses WHERE location=$location ORDER BY time DESC LIMIT 100", { location })
+    let totalMinutes = 0
+    let totalWeight = 0
+
+    const realTime = new Date()
+    let prevTime = realTime
+
+    for (const { minutes, time } of rows) {
+        const curTime = new Date(time)
+        const deltaTime = (prevTime - curTime) / 1000.0 / 60.0
+        const duration = (realTime - curTime) / 1000.0 / 60.0
+
+        const weight = deltaTime * Math.max(0.0001, 1.0 - Math.pow(duration / 30.0, 2.0))
+        totalMinutes += minutes * weight
+        totalWeight += weight
+
+        prevTime = curTime
+    }
+
+    const minutes = totalMinutes / totalWeight
 
     ctx.response.type = "application/json"
-    ctx.response.body = { rows }
+    ctx.response.body = { minutes }
 })
 
 app.use(async (ctx, next) => {
