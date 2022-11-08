@@ -1,5 +1,6 @@
 import { Application, Router, send } from "https://deno.land/x/oak@v11.1.0/mod.ts";
 import { Pool } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
+import { oakCors } from "https://deno.land/x/cors/mod.ts";
 
 const CONCURRENT_CONNECTIONS = 4;
 const connectOpts = Deno.env.get("DATABASE_URL") ?? { }
@@ -101,6 +102,8 @@ app.use(async (ctx, next) => {
         await next()
     }
 })
+
+app.use(oakCors())
 
 app.use(router.routes())
 
