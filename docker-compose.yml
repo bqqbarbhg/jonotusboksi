@@ -1,0 +1,41 @@
+version: "3.4"
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+    environment:
+      - PGPORT=5432
+      - PGDATABASE=database
+      - PGUSER=username
+      - PGPASSWORD=password
+      - PGHOST=jonotusboksi-db
+
+  database:
+    container_name: "jonotusboksi-db"
+    image: "postgres:13.4"
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+
+  flyway:
+    image: flyway/flyway:7.3.0-alpine
+    environment:
+      - FLYWAY_USER=username
+      - FLYWAY_PASSWORD=password
+      - FLYWAY_URL=jdbc:postgresql://jonotusboksi-db:5432/database
+    depends_on:
+      - database
+    volumes:
+      - .:/flyway/sql
+    command: -connectRetries=60 -baselineOnMigrate=true migrate

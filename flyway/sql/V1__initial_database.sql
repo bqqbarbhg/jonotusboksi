@@ -1,0 +1,6 @@
+CREATE TABLE presses (
+    id SERIAL PRIMARY KEY,
+    minutes INTEGER NOT NULL,
+    location TEXT NOT NULL,
+    time TIMESTAMP WITH TIME ZONE
+);
