@@ -81,7 +81,7 @@ async function getEstimate(location) {
         const deltaTime = (prevTime - curTime) / 1000.0 / 60.0
         const duration = (realTime - curTime) / 1000.0 / 60.0
 
-        const weight = deltaTime * Math.pow(Math.max(0.0001, 1.0 - duration / 30.0), 2.0)
+        const weight = deltaTime * Math.pow(Math.max(0.0001, 1.0 - duration / 25.0), 2.0)
         totalMinutes += minutes * weight
         totalVariance += (minutes * minutes) * weight
         totalWeight += weight
