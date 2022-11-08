@@ -70,6 +70,7 @@ async function getLocations() {
 async function getEstimate(location) {
     const rows = await executeSql("SELECT minutes, time FROM presses WHERE location=$location ORDER BY time DESC LIMIT 100", { location })
     let totalMinutes = 0
+    let totalVariance = 0
     let totalWeight = 0
 
     const realTime = new Date()
@@ -82,20 +83,24 @@ async function getEstimate(location) {
 
         const weight = deltaTime * Math.max(0.0001, 1.0 - Math.pow(duration / 30.0, 2.0))
         totalMinutes += minutes * weight
+        totalVariance += (minutes * minutes) * weight
         totalWeight += weight
 
         prevTime = curTime
     }
 
-    return totalMinutes / totalWeight
+    const mean = totalMinutes / totalWeight
+    const variance = Math.sqrt(Math.max(0.0, totalVariance / totalWeight - mean*mean))
+
+    return { mean, variance }
 }
 
 router.get("/api/time/:location", oakCors(), async (ctx, next) => {
     const location = ctx.params["location"]
-    const minutes = await getEstimate(location)
+    const estimate = await getEstimate(location)
 
     ctx.response.type = "application/json"
-    ctx.response.body = { minutes }
+    ctx.response.body = estimate
 })
 
 router.get("/api/times", oakCors(), async (ctx, next) => {
