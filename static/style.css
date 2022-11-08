@@ -59,7 +59,7 @@ body {
     height: 15vw;
     border-radius: 15vw;
     border: none;
-    font-size: 2vw;
+    font-size: 3vw;
     color: rgba(0,0,0,0.75);
     box-shadow: 0vw 2vw 2vw 0vw rgba(0,0,0,0.2);
     user-select: none;
@@ -76,7 +76,7 @@ body {
 h1 {
     font-family: sans-serif;
     margin-bottom: 8vw;
-    font-size: 4vw;
+    font-size: 6vw;
     color: #ffe;
     user-select: none;
 }
