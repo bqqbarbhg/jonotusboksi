@@ -23,6 +23,7 @@ html {
 
 body {
     background-color: #a98;
+    touch-action: none;
 }
 
 .color-0 {
