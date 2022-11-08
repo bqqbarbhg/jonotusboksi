@@ -11,7 +11,6 @@ async function executeSql(...args) {
     try {
         client = await pool.connect();
         result = await client.queryObject(...args)
-        console.log(result)
     } catch (err) {
         console.error(err);
     } finally {
