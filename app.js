@@ -47,8 +47,6 @@ router.post("/api/press", async (ctx, next) => {
     const minutes = buttonIdToMinutes[body.buttonId]
     if (!minutes) return
 
-    console.log(minutes)
-    console.log(location)
     await executeSql("INSERT INTO presses (minutes, location, time) VALUES ($minutes, $location, NOW())",
         { minutes, location })
 
