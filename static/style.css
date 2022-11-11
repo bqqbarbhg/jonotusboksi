@@ -9,6 +9,8 @@
 
 html {
     touch-action: manipulation;
+    -webkit-user-select : none;
+    user-select: none;
 }
 
 .body-container {
@@ -62,6 +64,7 @@ body {
     font-size: 3vw;
     color: rgba(0,0,0,0.75);
     box-shadow: 0vw 2vw 2vw 0vw rgba(0,0,0,0.2);
+    -webkit-user-select : none;
     user-select: none;
     transition: transform 0.1s ease;
     font-family: sans-serif;
@@ -78,5 +81,6 @@ h1 {
     margin-bottom: 8vw;
     font-size: 5vw;
     color: #ffe;
+    -webkit-user-select : none;
     user-select: none;
 }
