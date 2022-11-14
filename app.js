@@ -82,6 +82,17 @@ async function getEstimate(location) {
         secondsSincePressed = (realTime - lastTime) / 1000.0
     }
 
+    // Decay to 1-5min
+    const dummyTimes = [
+        { minutes: 1, weight: 0.001 },
+        { minutes: 5, weight: 0.001 },
+    ]
+    for (const { minutes, weight } of dummyTimes) {
+        totalMinutes += minutes * weight
+        totalVariance += (minutes * minutes) * weight
+        totalWeight += weight
+    }
+
     for (const { minutes, time } of rows) {
         const curTime = new Date(time)
         const deltaTime = (prevTime - curTime) / 1000.0 / 60.0
