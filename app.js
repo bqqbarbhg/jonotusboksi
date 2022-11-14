@@ -84,8 +84,8 @@ async function getEstimate(location) {
 
     // Decay to 1-5min
     const dummyTimes = [
-        { minutes: 1, weight: 0.001 },
-        { minutes: 5, weight: 0.001 },
+        { minutes: 1, weight: 0.0001 },
+        { minutes: 10, weight: 0.0001 },
     ]
     for (const { minutes, weight } of dummyTimes) {
         totalMinutes += minutes * weight
