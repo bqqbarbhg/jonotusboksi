@@ -76,6 +76,12 @@ async function getEstimate(location) {
     const realTime = new Date()
     let prevTime = realTime
 
+    let secondsSincePressed = 60*60
+    if (rows.length > 0) {
+        const lastTime = new Date(rows[0].time)
+        secondsSincePressed = (realTime - lastTime) / 1000.0
+    }
+
     for (const { minutes, time } of rows) {
         const curTime = new Date(time)
         const deltaTime = (prevTime - curTime) / 1000.0 / 60.0
@@ -92,7 +98,7 @@ async function getEstimate(location) {
     const mean = totalMinutes / totalWeight
     const variance = Math.sqrt(Math.max(0.0, totalVariance / totalWeight - mean*mean))
 
-    return { mean, variance }
+    return { mean, variance, secondsSincePressed }
 }
 
 router.get("/api/time/:location", oakCors(), async (ctx, next) => {
